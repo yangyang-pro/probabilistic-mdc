@@ -1,5 +1,5 @@
 # Probabilistic Multi-Dimensional Classification
-This repository contains the code for the paper [Probabilistic Multi-Dimensional Classification](https://openreview.net/forum?id=3WnTBadc-J) (*UAI 2023*)
+This repository contains the code for the paper [Probabilistic Multi-Dimensional Classification](https://openreview.net/forum?id=3WnTBadc-J) (*UAI 2023*).
 
 **Authors:** Vu-Linh Nguyen*, Yang Yang*, Cassio de Campos
 
