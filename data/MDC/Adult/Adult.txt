@@ -1,0 +1,84 @@
+Tables of Contents
+==================
+- Descriptions
+- Original Sources
+- References
+- Data Format (Matlab)
+- Preprocessing Notes
+
+
+Descriptions
+============
+Adult is a preprocessed version of Adult Data Set in UCI machine learning repository according to MDC framework. Adult deals with the task of categorizing persons from different dimensions based on their personal information, where the four class spaces correspond to workclass, marital-status, race, and sex, respectively.
+
+More descriptions of Adult can be found in UCI website (Adult Data Set: https://archive.ics.uci.edu/ml/datasets/Adult).
+
+In UCI, this data set is also known as Census Income Data Set (https://archive.ics.uci.edu/ml/datasets/Census+Income).
+
+There are also two similar data sets in UCI:
+1. Census-Income (KDD) Data Set (https://archive.ics.uci.edu/ml/datasets/Census-Income+%28KDD%29)
+2. US Census Data (1990) Data Set (https://archive.ics.uci.edu/ml/datasets/US+Census+Data+%281990%29)
+
+
+Original Sources
+================
+1. data: the union of adult.data and adult.test,
+		adult.data: https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data
+		adult.test: https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.test
+2. descriptions: https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.names
+
+
+References
+==========
+1. Please obey the citation policy of UCI machine learning repository (http://archive.ics.uci.edu/ml/citation_policy.html).
+
+2. The preprocessed Adult data set is firstly used as an MDC benchmark in the following SCIS'20 paper: 
+[Jia and Zhang, 2020] B.-B. Jia, M.-L. Zhang. Multi-dimensional classification via stacked dependency exploitation. Science China Information Sciences, 2020, 63(12): Article 222102.
+
+
+Data Format (Matlab)
+====================
+"data": A struct w.r.t. the input attribute representations, where
+		-data.orig is an mxd matrix and stores the original input attribute representations, where m is the number of instances and d is the number of features. Here, data.orig(i,:) stores the feature vector of the ith instance. If your learning algorithm is sensitive to the type of input attributes like decision tree, naive Bayes classifier, etc., then you should use data.orig;
+		-data.norm is an mxd' matrix and stores the preprocessed version of data.orig where discrete-valued attributes are transformed into their one-hot form and continuous-valued attributes are normalized into [0,1]. If your learning algorithm can only accept continuous-valued input attributes like support vector machine, logistic regression, etc., then you should use data.norm;
+		NOTE: If all input attributes are continuous-valued, then data.orig is empty and data.norm is a [0,1]-normalized matrix. 
+"data_type": A struct w.r.t. the type of input attributes where
+		-data_type.d_wo_o stores the indexes of all input attributes whose type is discrete-valued without ordinal relationship (a.k.a. categorical/nominal);
+		-data_type.d_w_o stores the indexes of all input attributes whose type is discrete-valued with ordinal relationship;
+		-data_type.b stores the indexes of all input attributes whose type is binary-valued;
+		-data_type.c stores the indexes of all input attributes whose type is continuous-valued (a.k.a. numeric).
+		NOTE: The corresponding field is empty when no such type of input attributes exist.
+"target": An mxq matrix w.r.t. the labeling information, where q is the number of dimensions. Here, target(i,:) stores the class vector associated with the ith instance.
+"data_name": A string which stores the name of this data set.
+"idx_folds": A 10x1 cell w.r.t. the data partition in ten-fold cross validation, where
+		-idx_folds{i}.train stores the indexes of training examples in the i-th cross validation,
+		-idx_folds{i}.test stores the indexes of testing examples in the i-th cross validation.
+		NOTE: These ten-fold cross validation partitions are only given for reference purpose. Please feel free to use your own partitions for experimental evaluation.
+
+
+Preprocessing Notes
+===================
+1. There are a total of 10 input attributes (Attribute Name: Possible Values [stored value]):
+	age:			continuous
+	final weight:	continuous
+	capital-gain:	continuous
+	capital-loss:	continuous
+	hours-per-week:	continuous
+	education:		Bachelors [1], Some-college [6], 11th [3], HS-grad [2], Prof-school [11], Assoc-acdm [7], Assoc-voc [10], 9th [5], 7th-8th [8], 12th [15], Masters [4], 1st-4th [16], 10th [13], Doctorate [9], 5th-6th [12], Preschool [14].
+	occupation:		Tech-support [10], Craft-repair [11], Other-service [5], Sales [6], Exec-managerial [2], Prof-specialty [4], Handlers-cleaners [3], Machine-op-inspct [9], Adm-clerical [1], Farming-fishing [8], Transport-moving [7], Priv-house-serv [14], Protective-serv [12], Armed-Forces [13].
+	relationship:	Wife [3], Own-child [4], Husband [2], Not-in-family [1], Other-relative [6], Unmarried [5].
+	native-country: United-States [1], Cambodia [15], England [8], Puerto-Rico [6], Canada [9], Germany [10], Outlying-US(Guam-USVI-etc) [32], India [4], Japan [29], Greece [35], South [28], China [27], Cuba [2], Iran [11], Honduras [7], Philippines [12], Italy [26], Poland [13], Jamaica [3], Vietnam [37], Mexico [5], Portugal [21], Ireland [39], France [24], Dominican-Republic [22], Laos [18], Ecuador [17], Taiwan [19], Haiti [20], Columbia [14], Hungary [40], Guatemala [25], Nicaragua [36], Scotland [33], Thailand [16], Yugoslavia [30], El-Salvador [23], Trinadad&Tobago [34], Peru [31], Hong [38].
+	income:			<=50K [0], >50K [1]. 
+	
+NOTE1: All examples with unknown attribute values are removed.
+NOTE2: To make it easier to store, we have mapped each attribute value into the number in its following brackets (Continuous attributes are not included).
+	
+2. There are a total of 4 output class spaces (Attribute Name: Possible Values [stored value]): 
+	workclass:		State-gov [1], Self-emp-not-inc [2], Private [3], Federal-gov [4], Local-gov [5], Self-emp-inc [6], Without-pay [7].
+	marital-status:	Never-married [1], Married-civ-spouse [2], Divorced [3], Married-spouse-absent [4], Separated [5], Married-AF-spouse [6], Widowed [7].
+	race:			White [1], Black [2], Asian-Pac-Islander [3], Amer-Indian-Eskimo [4], Other [5].
+	sex:			Male [1], Female [2].
+	
+NOTE1: To alleviate the class-imbalance ratio, examples which satisfy the following condition are removed:
+			(workclass==3)&((marital-status==1)|(marital-status==2)|(marital-status==3))&(race==1)
+NOTE2: To make it easier to store, we have mapped each attribute value into the number in its following brackets.

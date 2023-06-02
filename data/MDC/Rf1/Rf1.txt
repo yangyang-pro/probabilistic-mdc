@@ -1,0 +1,78 @@
+Tables of Contents
+==================
+- Descriptions
+- Original Sources
+- References
+- Data Format (Matlab)
+- Preprocessing Notes
+
+
+Descriptions
+============
+The Rf1 (river flow) dataset deals with the task of predicting river network flows for 48 h in the future at eight specific locations. The 64-dimensional features corresponds to the most recent observation for each of the 8 sites as well as time-lagged observations from 6, 12, 18, 24, 36, 48 and 60 h in the past. The 8 class spaces corresponds to relative representation of river flows for 48 h in the future at eight specific locations.
+
+More descriptions of Rf1 can be found in [Spyromitros-Xioufis et al., 2016, Appendix 1].
+
+
+Original Sources
+================
+1. MULAN (rf1): http://mulan.sourceforge.net/datasets-mtr.html
+
+
+References
+==========
+1. The original Rf1 data set is presented in the following MLJ'16 paper:
+[Spyromitros-Xioufis et al., 2016] E. Spyromitros-Xioufis, G. Tsoumakas, W. Groves, I. Vlahavas. Multi-Target Regression via Input Space Expansion: Treating Targets as Inputs. Machine Learning, 2016, 104: 55-98.
+
+2. The preprocessed Rf1 data set is firstly used as a multi-dimensional classification benchmark in the following SCIS'20 paper:
+B.-B. Jia, M.-L. Zhang. Multi-dimensional classification via stacked dependency exploitation. Science China Information Sciences, 2020, 63(12): Article 222102.
+
+
+Data Format (Matlab)
+====================
+"data": A struct w.r.t. the input attribute representations, where
+		-data.orig is an mxd matrix and stores the original input attribute representations, where m is the number of instances and d is the number of features. Here, data.orig(i,:) stores the feature vector of the ith instance. If your learning algorithm is sensitive to the type of input attributes like decision tree, naive Bayes classifier, etc., then you should use data.orig;
+		-data.norm is an mxd' matrix and stores the preprocessed version of data.orig where discrete-valued attributes are transformed into their one-hot form and continuous-valued attributes are normalized into [0,1]. If your learning algorithm can only accept continuous-valued input attributes like support vector machine, logistic regression, etc., then you should use data.norm;
+		NOTE: If all input attributes are continuous-valued, then data.orig is empty and data.norm is a [0,1]-normalized matrix. 
+"data_type": A struct w.r.t. the type of input attributes where
+		-data_type.d_wo_o stores the indexes of all input attributes whose type is discrete-valued without ordinal relationship (a.k.a. categorical/nominal);
+		-data_type.d_w_o stores the indexes of all input attributes whose type is discrete-valued with ordinal relationship;
+		-data_type.b stores the indexes of all input attributes whose type is binary-valued;
+		-data_type.c stores the indexes of all input attributes whose type is continuous-valued (a.k.a. numeric).
+		NOTE: The corresponding field is empty when no such type of input attributes exist.
+"target": An mxq matrix w.r.t. the labeling information, where q is the number of dimensions. Here, target(i,:) stores the class vector associated with the ith instance.
+"data_name": A string which stores the name of this data set.
+"idx_folds": A 10x1 cell w.r.t. the data partition in ten-fold cross validation, where
+		-idx_folds{i}.train stores the indexes of training examples in the i-th cross validation,
+		-idx_folds{i}.test stores the indexes of testing examples in the i-th cross validation.
+		NOTE: These ten-fold cross validation partitions are only given for reference purpose. Please feel free to use your own partitions for experimental evaluation.
+
+
+Preprocessing Notes
+===================
+1. The original Rf1 data set includes 9125 examples, where there are unknown input attribute values in the 1-60th and 4109-4168th examples. Therefore, these 120 examples are removed and then 9005 examples are left. 
+
+2. In the remaining 9005 examples, for the 2/10/18/26/34/42/50/58/66th input attributes, there maximum and minimum attribute values are abnormal. Specifically,
+	for the  2nd attribute, its maximum and minimum attribute values correspond to the 4711th and 5524th examples;
+	for the 10th attribute, its maximum and minimum attribute values correspond to the 4717th and 5530th examples;
+	for the 18th attribute, its maximum and minimum attribute values correspond to the 4723th and 5536th examples;
+	for the 26th attribute, its maximum and minimum attribute values correspond to the 4729th and 5542th examples;
+	for the 34th attribute, its maximum and minimum attribute values correspond to the 4735th and 5548th examples;
+	for the 42nd attribute, its maximum and minimum attribute values correspond to the 4747th and 5560th examples;
+	for the 50th attribute, its maximum and minimum attribute values correspond to the 4759th and 5572th examples;
+	for the 58th attribute, its maximum and minimum attribute values correspond to the 4771th and 5584th examples;
+	for the 66th attribute, its maximum and minimum attribute values correspond to the 4663th and 5476th examples.
+All these 18 examples are removed and then 8987 examples are left.	
+
+3. For the remaining 8987 examples, all the 64 continuous-valued input attributes have been normalized into 0-1 via min-max normalization (data.norm).
+
+4. For each output variable, all examples are sorted in ascending order, and then each variable is discretized into 3 or 4 values according to the their rankings.
+	For dim.1, rank<=2000 --> 1, 2000<rank<=7000 --> 2, 7000<rank<=8000 -->3, 8000<rank -->4,
+	For dim.2, rank<=1000 --> 1, 1000<rank<=5500 --> 2, 5500<rank<=8300 -->3, 8300<rank -->4,
+	For dim.3, rank<=1000 --> 1, 1000<rank<=7000 --> 2, 7000<rank -->3
+	For dim.4, rank<=1000 --> 1, 1000<rank<=6000 --> 2, 6000<rank<=7500 -->3, 7500<rank -->4,
+	For dim.5, rank<=1500 --> 1, 1500<rank<=5000 --> 2, 5000<rank<=8000 -->3, 8000<rank -->4,
+	For dim.6, rank<=1000 --> 1, 1000<rank<=7500 --> 2, 7500<rank -->3,
+	For dim.7, rank<=3500 --> 1, 3500<rank<=7000 --> 2, 7000<rank<=8150 -->3, 8150<rank -->4,
+	For dim.8, rank<=2600 --> 1, 2600<rank<=5800 --> 2, 5800<rank -->3.
+	
